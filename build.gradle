@@ -1,0 +1,29 @@
+
+plugins {
+  id 'java-library'
+  id 'eclipse'
+  id 'application'
+  id 'org.openjfx.javafxplugin' version '0.1.0'
+}
+
+apply from: 'build-eclipse.gradle'
+
+repositories {
+  mavenCentral()
+}
+
+javafx {
+    version = "21"
+    modules = [ 'javafx.controls' ]
+}
+
+dependencies {
+  implementation 'com.ibm.icu:icu4j:60.1'
+  implementation 'com.ibm.icu:icu4j-charset:60.1'
+}
+
+application {
+  mainClass.set('org.kku.jdiskusage.util.FileTree')
+}
+
+
