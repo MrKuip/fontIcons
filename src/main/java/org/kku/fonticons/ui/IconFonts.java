@@ -2,7 +2,10 @@ package org.kku.fonticons.ui;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import javafx.geometry.Bounds;
@@ -12,7 +15,7 @@ import javafx.scene.text.TextAlignment;
 
 public enum IconFonts
 {
-  MATERIAL_DESIGN("font/materialdesignicons-webfont.ttf");
+  MATERIAL_DESIGN("/font/materialdesignicons-webfont.ttf");
 
   private final String m_trueTypeFontResourceName;
   private Map<Integer, Font> fontBySizeMap = new HashMap<>();
@@ -36,12 +39,12 @@ public enum IconFonts
 
   public InputStream getTrueTypeFontAsStream()
   {
-    return IconFonts.class.getClassLoader().getResourceAsStream(getTrueTypeFontResourceName());
+    return IconFonts.class.getResourceAsStream(getTrueTypeFontResourceName());
   }
 
   public InputStream getTrueTypeFontDictionaryAsStream()
   {
-    return IconFonts.class.getClassLoader().getResourceAsStream(getTrueTypeFontResourceDictionaryName());
+    return IconFonts.class.getResourceAsStream(getTrueTypeFontResourceDictionaryName());
   }
 
   public Font getIconFont(int iconSize)
@@ -127,6 +130,29 @@ public enum IconFonts
 
   public String getCodepoint(String text)
   {
+    text = getIconNameProperties().getProperty(text, text);
+    text = new String(Character.toChars(Integer.parseInt(text, 16)));
+
+    return text;
+  }
+
+  public List<String> getAllIconNameList()
+  {
+    Enumeration<Object> keys;
+    List<String> list;
+
+    list = new ArrayList<>();
+    keys = getIconNameProperties().keys();
+    while (keys.hasMoreElements())
+    {
+      list.add(keys.nextElement().toString());
+    }
+
+    return list;
+  }
+
+  private Properties getIconNameProperties()
+  {
     if (m_nameToCodepointProperties == null)
     {
       try (InputStream is = getTrueTypeFontDictionaryAsStream())
@@ -136,10 +162,10 @@ public enum IconFonts
       }
       catch (IOException e)
       {
+        e.printStackTrace();
       }
     }
 
-    return m_nameToCodepointProperties.getProperty(text, text);
+    return m_nameToCodepointProperties;
   }
-
 }

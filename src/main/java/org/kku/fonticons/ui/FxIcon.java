@@ -2,6 +2,7 @@ package org.kku.fonticons.ui;
 
 import java.util.function.Supplier;
 import org.kku.fonticons.ui.IconFonts.FontMetrics;
+import org.kku.fonticons.util.IconUtil;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -14,7 +15,6 @@ import javafx.scene.text.FontSmoothingType;
 
 public class FxIcon
 {
-  public static FxIcon WEATHER_MOONSET_UP = new FxIcon(() -> new IconBuilder("WEATHER_MOONSET_UP"));
   public static FxIcon NEW = new FxIcon(() -> new IconBuilder("F0224").fill("F0214"));
   public static FxIcon DELETE = new FxIcon(() -> new IconBuilder("F09E7").fill("F01B4"));
   public static FxIcon SAVE = new FxIcon(() -> new IconBuilder("F0818").fill("F0193"));
@@ -73,6 +73,11 @@ public class FxIcon
 
   private final Supplier<IconBuilder> builder;
 
+  public FxIcon(String iconName)
+  {
+    this(() -> new IconBuilder(IconUtil.normalizeIconName(iconName)));
+  }
+
   private FxIcon(Supplier<IconBuilder> builder)
   {
     this.builder = builder;
@@ -115,7 +120,7 @@ public class FxIcon
     private Icon mi_icon;
     private IconSize mi_size;
 
-    IconBuilder(String codepoint)
+    public IconBuilder(String codepoint)
     {
       mi_icon = new Icon(codepoint);
       mi_icon.color = IconColor.DEFAULT_OUTLINE;
@@ -205,9 +210,9 @@ public class FxIcon
       private IconColor color = IconColor.DEFAULT_OUTLINE;
       private Icon fill;
 
-      public Icon(String codepoint)
+      public Icon(String text)
       {
-        text = new String(Character.toChars(Integer.parseInt(codepoint, 16)));
+        this.text = text;
       }
 
       public String getText()
