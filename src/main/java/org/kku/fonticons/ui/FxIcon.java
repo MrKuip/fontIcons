@@ -1,17 +1,17 @@
 package org.kku.fonticons.ui;
 
 import java.util.function.Supplier;
-import org.kku.fonticons.ui.IconFonts.FontMetrics;
 import org.kku.fonticons.util.IconUtil;
+import javafx.geometry.VPos;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.StrokeLineJoin;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontSmoothingType;
+import javafx.scene.text.TextAlignment;
 
 public class FxIcon
 {
@@ -160,45 +160,39 @@ public class FxIcon
       String text;
       GraphicsContext gc;
       Font font;
-      FontMetrics fontMetrics;
       Icon icon;
-      double correction;
-
-      // Correction because we do not have access to real FontMetrics
-      correction = 2.0;
 
       gc = canvas.getGraphicsContext2D();
-
       font = IconFonts.MATERIAL_DESIGN.getIconFont(mi_size.getSize());
-      fontMetrics = IconFonts.MATERIAL_DESIGN.getFontMetrics(font);
 
       if (mi_icon.fill != null)
       {
         icon = mi_icon.fill;
         text = IconFonts.MATERIAL_DESIGN.getCodepoint(icon.getText());
 
-        x = (canvas.getWidth() - fontMetrics.computeStringWidth(text)) / 2.0;
-        y = (canvas.getHeight() + fontMetrics.getAscent()) / 2 - correction;
+        x = canvas.getWidth() / 2;
+        y = canvas.getHeight() / 2;
 
         gc.setFont(font);
         gc.setFill(icon.getColor());
         gc.setFontSmoothingType(FontSmoothingType.GRAY);
-        gc.fillText(text, x, y);
+        gc.setTextAlign(TextAlignment.CENTER);
+        gc.setTextBaseline(VPos.CENTER);
+        gc.fillText(text, 0, 0);
       }
 
       icon = mi_icon;
       text = IconFonts.MATERIAL_DESIGN.getCodepoint(icon.getText());
 
-      x = (canvas.getWidth() - fontMetrics.computeStringWidth(text)) / 2.0;
-      y = (canvas.getHeight() + fontMetrics.getAscent()) / 2 - correction;
+      x = canvas.getWidth() / 2;
+      y = canvas.getHeight() / 2;
 
       gc.setFont(font);
       gc.setStroke(icon.getColor());
       gc.setFill(icon.getColor());
       gc.setFontSmoothingType(FontSmoothingType.GRAY);
-      gc.setLineWidth(1.2);
-      gc.setLineJoin(StrokeLineJoin.MITER);
-      gc.setMiterLimit(2.0);
+      gc.setTextAlign(TextAlignment.CENTER);
+      gc.setTextBaseline(VPos.CENTER);
       gc.fillText(text, x, y);
 
       return canvas;

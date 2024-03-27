@@ -5,4 +5,5 @@ module materialdesignicons
   requires com.ibm.icu;
 
   exports org.kku.fonticons.ui;
+  exports org.kku.fonticons.sample;
 }
