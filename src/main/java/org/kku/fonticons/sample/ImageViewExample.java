@@ -3,7 +3,7 @@ package org.kku.fonticons.sample;
 import java.io.IOException;
 import org.kku.fonticons.ui.FxIcon;
 import org.kku.fonticons.ui.FxIcon.IconSize;
-import org.kku.fonticons.ui.IconFonts;
+import org.kku.fonticons.ui.IconFont;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.image.ImageView;
@@ -18,11 +18,11 @@ public class ImageViewExample
   {
     FlowPane root = new FlowPane();
 
-    IconFonts.MATERIAL_DESIGN.getAllIconNameList().forEach(s -> {
+    IconFont.MATERIAL_DESIGN.getAllIconNameList().forEach(s -> {
       FxIcon icon;
 
-      icon = new FxIcon(s);
-      root.getChildren().add(new ImageView(icon.getImage(IconSize.LARGE)));
+      icon = new FxIcon(s).size(IconSize.LARGE);
+      root.getChildren().add(icon.getImageView());
     });
 
     // Setting the Scene object

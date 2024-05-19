@@ -7,7 +7,7 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
-import org.kku.fonticons.ui.IconFonts;
+import org.kku.fonticons.ui.IconFont;
 import org.kku.fonticons.util.IconUtil;
 import com.google.typography.font.sfntly.Font;
 import com.google.typography.font.sfntly.FontFactory;
@@ -26,7 +26,7 @@ public class GenerateTtfDictionaries
 
   public void generate()
   {
-    Stream.of(IconFonts.values()).forEach(iconFont -> {
+    Stream.of(IconFont.values()).forEach(iconFont -> {
       File dictonaryFile;
 
       dictonaryFile = new File(m_buildDir, iconFont.getTrueTypeFontResourceDictionaryName());

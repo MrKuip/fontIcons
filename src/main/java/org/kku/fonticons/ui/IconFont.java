@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.Properties;
 import javafx.scene.text.Font;
 
-public enum IconFonts
+public enum IconFont
 {
   MATERIAL_DESIGN("/font/materialdesignicons-webfont.ttf");
 
@@ -18,7 +18,7 @@ public enum IconFonts
   private Map<Integer, Font> fontBySizeMap = new HashMap<>();
   private Properties m_nameToCodepointProperties;
 
-  IconFonts(String trueTypeFontResourceName)
+  IconFont(String trueTypeFontResourceName)
   {
     m_trueTypeFontResourceName = trueTypeFontResourceName;
   }
@@ -35,14 +35,19 @@ public enum IconFonts
 
   public InputStream getTrueTypeFontAsStream()
   {
-    return IconFonts.class.getResourceAsStream(getTrueTypeFontResourceName());
+    return IconFont.class.getResourceAsStream(getTrueTypeFontResourceName());
   }
 
   public InputStream getTrueTypeFontDictionaryAsStream()
   {
-    return IconFonts.class.getResourceAsStream(getTrueTypeFontResourceDictionaryName());
+    return IconFont.class.getResourceAsStream(getTrueTypeFontResourceDictionaryName());
   }
 
+  public FxIcon getIcon(String iconName)
+  {
+    return new FxIcon(iconName).font(this);
+  }
+  
   public Font getIconFont(int iconSize)
   {
     Font font;
