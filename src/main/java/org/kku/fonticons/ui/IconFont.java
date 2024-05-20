@@ -15,7 +15,7 @@ public enum IconFont
   MATERIAL_DESIGN("/font/materialdesignicons-webfont.ttf");
 
   private final String m_trueTypeFontResourceName;
-  private Map<Integer, Font> fontBySizeMap = new HashMap<>();
+  private Map<Double, Font> fontBySizeMap = new HashMap<>();
   private Properties m_nameToCodepointProperties;
 
   IconFont(String trueTypeFontResourceName)
@@ -47,8 +47,8 @@ public enum IconFont
   {
     return new FxIcon(iconName).font(this);
   }
-  
-  public Font getIconFont(int iconSize)
+
+  public Font getIconFont(double iconSize)
   {
     Font font;
 

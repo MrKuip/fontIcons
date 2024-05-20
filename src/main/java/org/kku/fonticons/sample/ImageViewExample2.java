@@ -21,7 +21,6 @@ public class ImageViewExample2
     GridPane root;
     FxIcon orgIcon;
     FxIcon labelIcon;
-    FxIcon outlineIcon;
     FxIcon icon;
     FxIcon icon2;
     int row;
@@ -30,8 +29,9 @@ public class ImageViewExample2
     root = new GridPane();
     root.setGridLinesVisible(true);
     orgIcon = IconFont.MATERIAL_DESIGN.getIcon("account");
-    labelIcon = IconFont.MATERIAL_DESIGN.getIcon("close").size(IconSize.SMALLER).color(Color.RED);
-    outlineIcon = IconFont.MATERIAL_DESIGN.getIcon("account-outline").color(Color.BLACK).size(IconSize.VERY_LARGE);
+    orgIcon = IconFont.MATERIAL_DESIGN.getIcon("square-outline");
+    labelIcon = IconFont.MATERIAL_DESIGN.getIcon("close").fillColor(Color.YELLOW).strokeColor(Color.BLACK);
+    labelIcon = IconFont.MATERIAL_DESIGN.getIcon("square-outline").fillColor(Color.YELLOW).strokeColor(Color.BLACK);
 
     row = 0;
     column = 0;
@@ -42,21 +42,29 @@ public class ImageViewExample2
       {
         continue;
       }
+
       row++;
       column = 0;
 
       icon = orgIcon.size(iconSize);
-      System.out.println("add(" + iconSize.name() + " -> " + column + ", " + row + ")");
       root.add(icon.getImageView(), column, row);
 
       for (IconColor iconColor : IconColor.values())
       {
         column++;
-        icon2 = icon.color(iconColor);
-        icon2 = icon2.add(IconAlignment.CENTER_CENTER, outlineIcon);
+        icon2 = icon.fillColor(iconColor).strokeColor(Color.BLACK);
+        icon2 = icon2.add(IconAlignment.UPPER_LEFT, labelIcon);
         icon2 = icon2.add(IconAlignment.UPPER_RIGHT, labelIcon);
-        System.out.println("add(" + iconSize.name() + "." + iconColor.name() + " -> " + column + ", " + row + ")");
+        icon2 = icon2.add(IconAlignment.UPPER_CENTER, labelIcon);
+        icon2 = icon2.add(IconAlignment.CENTER_RIGHT, labelIcon);
+        icon2 = icon2.add(IconAlignment.CENTER_CENTER, labelIcon, 3);
+        icon2 = icon2.add(IconAlignment.CENTER_LEFT, labelIcon);
+        icon2 = icon2.add(IconAlignment.LOWER_RIGHT, labelIcon);
+        icon2 = icon2.add(IconAlignment.LOWER_CENTER, labelIcon);
+        icon2 = icon2.add(IconAlignment.LOWER_LEFT, labelIcon);
         root.add(icon2.getImageView(), column, row);
+        //column++;
+        //root.add(labelIcon.getImageView(), column, row);
       }
     }
 

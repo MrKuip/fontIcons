@@ -1,7 +1,7 @@
 module materialdesignicons
 {
   requires java.logging;
-  requires javafx.graphics;
+  requires transitive javafx.graphics;
   requires com.ibm.icu;
 
   exports org.kku.fonticons.ui;

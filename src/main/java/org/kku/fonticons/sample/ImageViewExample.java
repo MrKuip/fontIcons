@@ -6,7 +6,6 @@ import org.kku.fonticons.ui.FxIcon.IconSize;
 import org.kku.fonticons.ui.IconFont;
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
 
