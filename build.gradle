@@ -33,12 +33,12 @@ task fontIconsJar(type: Jar) {
   archiveBaseName = "fontIcons"
   manifest {
     attributes 'Implementation-Title': 'FontIcons (material design)',  
-               'Automatic-Module-Name': 'org.kku.fontIcons',
+              // 'Automatic-Module-Name': 'org.kku.fontIcons',
                'Implementation-Version': version
   }
   includeEmptyDirs = false
   from sourceSets.main.output
-  include "**/fonticons/ui/**/*.class", "**/fonticons/util/**/*.class", "font/**" 
+  include "**/fonticons/ui/**/*.class", "**/fonticons/util/**/*.class", "font/**", "**/fonticons/sample/**/*.class", "module-info.class"
 }
 
 jar.dependsOn generateFontDictionary
