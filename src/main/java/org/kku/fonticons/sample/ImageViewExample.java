@@ -1,15 +1,17 @@
 package org.kku.fonticons.sample;
 
 import java.io.IOException;
+
 import org.kku.fonticons.ui.FxIcon;
 import org.kku.fonticons.ui.FxIcon.IconSize;
 import org.kku.fonticons.ui.IconFont;
+import org.kordamp.ikonli.javafx.FontIcon;
+
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.FlowPane;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class ImageViewExample
@@ -25,10 +27,22 @@ public class ImageViewExample
 
     IconFont.MATERIAL_DESIGN.getAllIconNameList().forEach(s -> {
       FxIcon icon;
+      String name;
 
       //icon = new FxIcon(s).size(IconSize.LARGE).fillColor(Color.ORANGE).strokeColor(IconColorModifier.DARKER);
-      icon = new FxIcon(s).size(IconSize.LARGE).fillColor(Color.ORANGE);
+      icon = new FxIcon(s).size(IconSize.LARGE);
+      //root.getChildren().add(new Button(icon.getId(), icon.getCanvas()));
       root.getChildren().add(new Button(icon.getId(), icon.getImageView()));
+      name = s.toLowerCase().replace("_" , "-");
+      name = "mdi2" + name.charAt(0) + "-" + name + ":32:RED";
+      try
+      {
+      root.getChildren().add(new Button(icon.getId(),  new FontIcon(name)));
+      }catch(Exception ex)
+      {
+    	System.out.println(name + " doesn't exist");
+      }
+
     });
     scrollPane = new ScrollPane(root);
     scrollPane.setFitToHeight(true);

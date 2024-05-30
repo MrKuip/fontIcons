@@ -213,7 +213,7 @@ public class FxIcon
   {
     return new ImageView(getImage());
   }
-
+  
   public Image getImage()
   {
     Image result;
@@ -229,6 +229,11 @@ public class FxIcon
     result = image;
 
     return result;
+  }
+  
+  public Canvas getCanvas()
+  {
+    return builder.build();
   }
 
   public static class IconBuilder
@@ -308,7 +313,7 @@ public class FxIcon
     {
       Canvas canvas;
 
-      canvas = new Canvas(mi_size, mi_size);
+      canvas = new Canvas(mi_size + 1, mi_size + 1);
       if (m_debug)
       {
         drawGrid(canvas);
@@ -349,7 +354,7 @@ public class FxIcon
 
       gc.setFont(font);
       gc.setFill(builder.mi_fillColor);
-      gc.setFontSmoothingType(FontSmoothingType.GRAY);
+      gc.setFontSmoothingType(FontSmoothingType.LCD);
       gc.setTextAlign(iconAlignment.getTextAlign());
       gc.setTextBaseline(iconAlignment.getTextBaseline());
 
