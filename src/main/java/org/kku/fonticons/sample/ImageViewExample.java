@@ -33,6 +33,7 @@ public class ImageViewExample
       icon = new FxIcon(s).size(IconSize.LARGE);
       //root.getChildren().add(new Button(icon.getId(), icon.getCanvas()));
       root.getChildren().add(new Button(icon.getId(), icon.getImageView()));
+      root.getChildren().add(new Button(icon.getId(), icon.getCanvas()));
       name = s.toLowerCase().replace("_" , "-");
       name = "mdi2" + name.charAt(0) + "-" + name + ":32:RED";
       try

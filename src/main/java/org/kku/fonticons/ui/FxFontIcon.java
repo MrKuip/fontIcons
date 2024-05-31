@@ -16,7 +16,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontSmoothingType;
 import javafx.scene.text.TextAlignment;
 
-public class FxIcon
+public class FxFontIcon
 {
   static public boolean m_debug = false;
 
@@ -139,12 +139,12 @@ public class FxIcon
 
   private final IconBuilder builder;
 
-  public FxIcon(String iconId)
+  public FxFontIcon(String iconId)
   {
     this(new IconBuilder(iconId));
   }
 
-  public FxIcon(IconBuilder builder)
+  public FxFontIcon(IconBuilder builder)
   {
     this.builder = builder;
   }
@@ -154,19 +154,19 @@ public class FxIcon
     return builder.getId();
   }
 
-  public FxIcon font(IconFont font)
+  public FxFontIcon font(IconFont font)
   {
-    return new FxIcon(builder.font(font));
+    return new FxFontIcon(builder.font(font));
   }
 
-  public FxIcon size(IconSize size)
+  public FxFontIcon size(IconSize size)
   {
     return size(size.getSize());
   }
 
-  public FxIcon size(double size)
+  public FxFontIcon size(double size)
   {
-    return new FxIcon(builder.size(size));
+    return new FxFontIcon(builder.size(size));
   }
 
   public double getSize()
@@ -174,39 +174,39 @@ public class FxIcon
     return builder.getSize();
   }
 
-  public FxIcon fillColor(IconColor color)
+  public FxFontIcon fillColor(IconColor color)
   {
     return fillColor(color.getColor());
   }
 
-  public FxIcon fillColor(Color color)
+  public FxFontIcon fillColor(Color color)
   {
-    return new FxIcon(builder.fillColor(color));
+    return new FxFontIcon(builder.fillColor(color));
   }
 
-  public FxIcon strokeColor(IconColor strokeColor)
+  public FxFontIcon strokeColor(IconColor strokeColor)
   {
     return strokeColor(strokeColor.getColor());
   }
 
-  public FxIcon strokeColor(Color strokeColor)
+  public FxFontIcon strokeColor(Color strokeColor)
   {
-    return new FxIcon(builder.strokeColor(strokeColor));
+    return new FxFontIcon(builder.strokeColor(strokeColor));
   }
 
-  public FxIcon strokeColor(IconColorModifier iconColorModifier)
+  public FxFontIcon strokeColor(IconColorModifier iconColorModifier)
   {
-    return new FxIcon(builder.strokeColor(iconColorModifier));
+    return new FxFontIcon(builder.strokeColor(iconColorModifier));
   }
 
-  public FxIcon add(IconAlignment alignment, FxIcon fxIcon)
+  public FxFontIcon add(IconAlignment alignment, FxFontIcon fxIcon)
   {
     return add(alignment, fxIcon, alignment.getDefaultSizeFactor());
   }
 
-  public FxIcon add(IconAlignment alignment, FxIcon fxIcon, double sizeFactor)
+  public FxFontIcon add(IconAlignment alignment, FxFontIcon fxIcon, double sizeFactor)
   {
-    return new FxIcon(builder.add(alignment, fxIcon.size(getSize() / sizeFactor)));
+    return new FxFontIcon(builder.add(alignment, fxIcon.size(getSize() / sizeFactor)));
   }
 
   public ImageView getImageView()
@@ -243,16 +243,16 @@ public class FxIcon
     private final double mi_size;
     private final Color mi_fillColor;
     private final Color mi_strokeColor;
-    private final HashMap<IconAlignment, FxIcon> mi_iconMap;
+    private final HashMap<IconAlignment, FxFontIcon> mi_iconMap;
 
     public IconBuilder(String iconId)
     {
       this(IconFont.values()[0], iconId, IconSize.SMALL.getSize(), IconColor.DEFAULT_OUTLINE.getColor(), null,
-          new LinkedHashMap<IconAlignment, FxIcon>());
+          new LinkedHashMap<IconAlignment, FxFontIcon>());
     }
 
     public IconBuilder(IconFont iconFont, String iconId, double size, Color fillColor, Color strokeColor,
-        LinkedHashMap<IconAlignment, FxIcon> iconMap)
+        LinkedHashMap<IconAlignment, FxFontIcon> iconMap)
     {
       mi_iconFont = iconFont;
       mi_iconId = IconUtil.normalizeIconName(iconId);
@@ -301,9 +301,9 @@ public class FxIcon
           new LinkedHashMap<>(mi_iconMap));
     }
 
-    public IconBuilder add(IconAlignment alignment, FxIcon fxIcon)
+    public IconBuilder add(IconAlignment alignment, FxFontIcon fxIcon)
     {
-      LinkedHashMap<IconAlignment, FxIcon> iconMap;
+      LinkedHashMap<IconAlignment, FxFontIcon> iconMap;
       iconMap = new LinkedHashMap<>(mi_iconMap);
       iconMap.put(alignment, fxIcon);
       return new IconBuilder(mi_iconFont, mi_iconId, mi_size, mi_fillColor, mi_strokeColor, iconMap);
@@ -360,7 +360,7 @@ public class FxIcon
 
       x = snap(iconAlignment.getX(canvas));
       y = snap(iconAlignment.getY(canvas));
-      gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+      System.out.println("x.y = " + x + ", " + y);
       gc.fillText(text, x, y);
       if (builder.mi_strokeColor != null)
       {
