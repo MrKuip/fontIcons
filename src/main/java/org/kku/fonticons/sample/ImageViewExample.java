@@ -5,7 +5,6 @@ import java.io.IOException;
 import org.kku.fonticons.ui.FxIcon;
 import org.kku.fonticons.ui.FxIcon.IconSize;
 import org.kku.fonticons.ui.IconFont;
-import org.kordamp.ikonli.javafx.FontIcon;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -34,16 +33,6 @@ public class ImageViewExample
       //root.getChildren().add(new Button(icon.getId(), icon.getCanvas()));
       root.getChildren().add(new Button(icon.getId(), icon.getImageView()));
       root.getChildren().add(new Button(icon.getId(), icon.getCanvas()));
-      name = s.toLowerCase().replace("_" , "-");
-      name = "mdi2" + name.charAt(0) + "-" + name + ":32:RED";
-      try
-      {
-      root.getChildren().add(new Button(icon.getId(),  new FontIcon(name)));
-      }catch(Exception ex)
-      {
-    	System.out.println(name + " doesn't exist");
-      }
-
     });
     scrollPane = new ScrollPane(root);
     scrollPane.setFitToHeight(true);

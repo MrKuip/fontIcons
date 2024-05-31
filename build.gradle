@@ -22,8 +22,6 @@ javafx {
 dependencies {
   implementation 'com.ibm.icu:icu4j:74.2'
   implementation 'com.ibm.icu:icu4j-charset:74.2'
-  implementation 'org.kordamp.ikonli:ikonli-javafx:12.3.1'
-  implementation 'org.kordamp.ikonli:ikonli-materialdesign2-pack:12.3.1'
 }
 
 task generateFontDictionary(type: JavaExec) {
@@ -46,4 +44,9 @@ task fontIconsJar(type: Jar) {
 
 jar.dependsOn generateFontDictionary
 fontIconsJar.dependsOn jar
+
+application {
+  mainClass.set('org.kku.fonticons.sample.ImageViewExample');
+  mainModule.set('org.kku.materialdesignicons');
+}
 
