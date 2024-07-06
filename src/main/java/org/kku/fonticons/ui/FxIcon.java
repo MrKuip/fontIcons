@@ -1,25 +1,18 @@
 package org.kku.fonticons.ui;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.function.Function;
 import org.kku.fonticons.util.IconUtil;
-import javafx.geometry.VPos;
-import javafx.scene.SnapshotParameters;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.image.WritableImage;
+import javafx.geometry.BoundingBox;
+import javafx.scene.Node;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.text.FontSmoothingType;
-import javafx.scene.text.TextAlignment;
+import javafx.scene.text.Text;
 
 public class FxIcon
 {
-  static public boolean m_debug = false;
-
   public enum IconSize
   {
     VERY_SMALL(12),
@@ -85,50 +78,21 @@ public class FxIcon
 
   public enum IconAlignment
   {
-    UPPER_RIGHT(3, TextAlignment.RIGHT, VPos.TOP, c -> c.getWidth(), c -> 0.0),
-    UPPER_CENTER(3, TextAlignment.CENTER, VPos.TOP, c -> c.getWidth() / 2.0, c -> 0.0),
-    UPPER_LEFT(3, TextAlignment.LEFT, VPos.TOP, c -> 0.0, c -> 0.0),
-    CENTER_RIGHT(3, TextAlignment.RIGHT, VPos.CENTER, c -> c.getWidth(), c -> c.getHeight() / 2.0),
-    CENTER_CENTER(1, TextAlignment.CENTER, VPos.CENTER, c -> ((int) (c.getWidth() / 2.0)) + 0.5, c -> ((int) (c.getWidth() / 2.0)) + 0.5),
-    CENTER_LEFT(3, TextAlignment.LEFT, VPos.CENTER, c -> 0.0, c -> c.getHeight() / 2.0),
-    LOWER_RIGHT(3, TextAlignment.RIGHT, VPos.BOTTOM, c -> c.getWidth(), c -> c.getHeight()),
-    LOWER_CENTER(3, TextAlignment.CENTER, VPos.BOTTOM, c -> c.getWidth() / 2.0, c -> c.getWidth()),
-    LOWER_LEFT(3, TextAlignment.LEFT, VPos.BOTTOM, c -> 0.0, c -> c.getHeight());
+    UPPER_RIGHT(0.33),
+    UPPER_CENTER(0.33),
+    UPPER_LEFT(0.33),
+    CENTER_RIGHT(0.33),
+    CENTER_CENTER(1),
+    CENTER_LEFT(0.33),
+    LOWER_RIGHT(0.33),
+    LOWER_CENTER(0.33),
+    LOWER_LEFT(0.33);
 
     private final double mi_defaultSizeFactor;
-    private final Function<Canvas, Double> mi_x;
-    private final Function<Canvas, Double> mi_y;
-    private final TextAlignment mi_textAlign;
-    private final VPos mi_textBaseline;
 
-    IconAlignment(double sizeFactor, TextAlignment textAlign, VPos textBaseline, Function<Canvas, Double> x,
-        Function<Canvas, Double> y)
+    IconAlignment(double sizeFactor)
     {
       mi_defaultSizeFactor = sizeFactor;
-      mi_textAlign = textAlign;
-      mi_textBaseline = textBaseline;
-      mi_x = x;
-      mi_y = y;
-    }
-
-    public double getX(Canvas c)
-    {
-      return mi_x.apply(c);
-    }
-
-    public double getY(Canvas c)
-    {
-      return mi_y.apply(c);
-    }
-
-    public TextAlignment getTextAlign()
-    {
-      return mi_textAlign;
-    }
-
-    public VPos getTextBaseline()
-    {
-      return mi_textBaseline;
     }
 
     public double getDefaultSizeFactor()
@@ -137,26 +101,49 @@ public class FxIcon
     }
   }
 
-  private final IconBuilder builder;
+  private final IconFont m_iconFont;
+  private final String m_iconId;
+  private final double m_size;
+  private final Color m_fillColor;
+  private final Color m_strokeColor;
+  private final Map<IconAlignment, FxIcon> m_iconMap;
+  private final Font m_font;
+  private final String m_text;
+
+  public FxIcon(FxIcon icon)
+  {
+    this(icon.m_iconFont, icon.m_iconId, icon.m_size, icon.m_fillColor, icon.m_strokeColor,
+        new LinkedHashMap<>(icon.m_iconMap));
+  }
 
   public FxIcon(String iconId)
   {
-    this(new IconBuilder(iconId));
+    this(IconFont.values()[0], iconId, IconSize.SMALL.getSize(), IconColor.DEFAULT_OUTLINE.getColor(), null,
+        new LinkedHashMap<IconAlignment, FxIcon>());
   }
 
-  public FxIcon(IconBuilder builder)
+  public FxIcon(IconFont iconFont, String iconId, double size, Color fillColor, Color strokeColor,
+      Map<IconAlignment, FxIcon> iconMap)
   {
-    this.builder = builder;
+    m_iconFont = iconFont;
+    m_iconId = IconUtil.normalizeIconName(iconId);
+    m_size = size;
+    m_fillColor = fillColor;
+    m_iconMap = iconMap;
+    m_strokeColor = strokeColor;
+
+    m_font = m_iconFont.getIconFont(size);
+    m_text = m_iconFont.getCodepoint(getId());
   }
 
   public String getId()
   {
-    return builder.getId();
+    return m_iconId;
   }
 
   public FxIcon font(IconFont font)
   {
-    return new FxIcon(builder.font(font));
+    return new FxIcon(font, m_iconId, m_size, m_fillColor, m_strokeColor, m_iconMap);
   }
 
   public FxIcon size(IconSize size)
@@ -166,22 +153,42 @@ public class FxIcon
 
   public FxIcon size(double size)
   {
-    return new FxIcon(builder.size(size));
+    return new FxIcon(m_iconFont, m_iconId, size, m_fillColor, m_strokeColor, m_iconMap);
   }
 
   public double getSize()
   {
-    return builder.getSize();
+    return m_size;
   }
 
-  public FxIcon fillColor(IconColor color)
+  public String getText()
   {
-    return fillColor(color.getColor());
+    return m_text;
   }
 
-  public FxIcon fillColor(Color color)
+  public Font getFont()
   {
-    return new FxIcon(builder.fillColor(color));
+    return m_font;
+  }
+
+  public Color getFillColor()
+  {
+    return m_fillColor;
+  }
+
+  public Color getStrokeColor()
+  {
+    return m_strokeColor;
+  }
+
+  public FxIcon fillColor(IconColor fillColor)
+  {
+    return fillColor(fillColor.getColor());
+  }
+
+  public FxIcon fillColor(Color fillColor)
+  {
+    return new FxIcon(m_iconFont, m_iconId, m_size, fillColor, m_strokeColor, m_iconMap);
   }
 
   public FxIcon strokeColor(IconColor strokeColor)
@@ -189,14 +196,14 @@ public class FxIcon
     return strokeColor(strokeColor.getColor());
   }
 
-  public FxIcon strokeColor(Color strokeColor)
-  {
-    return new FxIcon(builder.strokeColor(strokeColor));
-  }
-
   public FxIcon strokeColor(IconColorModifier iconColorModifier)
   {
-    return new FxIcon(builder.strokeColor(iconColorModifier));
+    return strokeColor(iconColorModifier.modify(m_fillColor));
+  }
+
+  public FxIcon strokeColor(Color strokeColor)
+  {
+    return new FxIcon(m_iconFont, m_iconId, m_size, m_fillColor, strokeColor, m_iconMap);
   }
 
   public FxIcon add(IconAlignment alignment, FxIcon fxIcon)
@@ -206,195 +213,149 @@ public class FxIcon
 
   public FxIcon add(IconAlignment alignment, FxIcon fxIcon, double sizeFactor)
   {
-    return new FxIcon(builder.add(alignment, fxIcon.size(getSize() / sizeFactor)));
+    LinkedHashMap<IconAlignment, FxIcon> iconMap;
+
+    iconMap = new LinkedHashMap<>(m_iconMap);
+    iconMap.put(alignment, new FxIcon(fxIcon).size(getSize() * sizeFactor));
+
+    return new FxIcon(m_iconFont, m_iconId, m_size, m_fillColor, m_strokeColor, iconMap);
   }
 
-  public ImageView getImageView()
+  public IconLabel getIconLabel()
   {
-    return new ImageView(getImage());
-  }
-  
-  public Image getImage()
-  {
-    Image result;
-    Canvas canvas;
-
-    WritableImage image;
-    SnapshotParameters snapshotParameters;
-
-    canvas = builder.build();
-    snapshotParameters = new SnapshotParameters();
-    snapshotParameters.setFill(Color.TRANSPARENT);
-    image = canvas.snapshot(snapshotParameters, null);
-    result = image;
-
-    return result;
-  }
-  
-  public Canvas getCanvas()
-  {
-    return builder.build();
+    return new IconLabel(this);
   }
 
-  public static class IconBuilder
+  public static class IconLabel
+    extends Pane
   {
-    private final IconFont mi_iconFont;
-    private final String mi_iconId;
-    private final double mi_size;
-    private final Color mi_fillColor;
-    private final Color mi_strokeColor;
-    private final HashMap<IconAlignment, FxIcon> mi_iconMap;
+    private static final String BOUNDING_BOX = "BOUNDING_BOX";
 
-    public IconBuilder(String iconId)
+    private final FxIcon m_icon;
+
+    private IconLabel(FxIcon icon)
     {
-      this(IconFont.values()[0], iconId, IconSize.SMALL.getSize(), IconColor.DEFAULT_OUTLINE.getColor(), null,
-          new LinkedHashMap<IconAlignment, FxIcon>());
+      m_icon = icon;
+      init();
     }
 
-    public IconBuilder(IconFont iconFont, String iconId, double size, Color fillColor, Color strokeColor,
-        LinkedHashMap<IconAlignment, FxIcon> iconMap)
+    private void init()
     {
-      mi_iconFont = iconFont;
-      mi_iconId = IconUtil.normalizeIconName(iconId);
-      mi_size = size;
-      mi_fillColor = fillColor;
-      mi_iconMap = iconMap;
-      mi_strokeColor = strokeColor;
-    }
+      addIcon(m_icon.getText(), m_icon.getFont(), m_icon.getFillColor(), m_icon.getStrokeColor(), 0.0, 0.0,
+          m_icon.getSize(), m_icon.getSize());
 
-    public String getId()
-    {
-      return mi_iconId;
-    }
-
-    public IconBuilder size(double size)
-    {
-      return new IconBuilder(mi_iconFont, mi_iconId, size, mi_fillColor, mi_strokeColor,
-          new LinkedHashMap<>(mi_iconMap));
-    }
-
-    public double getSize()
-    {
-      return mi_size;
-    }
-
-    public IconBuilder font(IconFont iconFont)
-    {
-      return new IconBuilder(iconFont, mi_iconId, mi_size, mi_fillColor, mi_strokeColor,
-          new LinkedHashMap<>(mi_iconMap));
-    }
-
-    public IconBuilder fillColor(Color color)
-    {
-      return new IconBuilder(mi_iconFont, mi_iconId, mi_size, color, mi_strokeColor, new LinkedHashMap<>(mi_iconMap));
-    }
-
-    public IconBuilder strokeColor(Color strokeColor)
-    {
-      return new IconBuilder(mi_iconFont, mi_iconId, mi_size, mi_fillColor, strokeColor,
-          new LinkedHashMap<>(mi_iconMap));
-    }
-
-    public IconBuilder strokeColor(IconColorModifier iconColorModifier)
-    {
-      return new IconBuilder(mi_iconFont, mi_iconId, mi_size, mi_fillColor, mi_fillColor.darker(),
-          new LinkedHashMap<>(mi_iconMap));
-    }
-
-    public IconBuilder add(IconAlignment alignment, FxIcon fxIcon)
-    {
-      LinkedHashMap<IconAlignment, FxIcon> iconMap;
-      iconMap = new LinkedHashMap<>(mi_iconMap);
-      iconMap.put(alignment, fxIcon);
-      return new IconBuilder(mi_iconFont, mi_iconId, mi_size, mi_fillColor, mi_strokeColor, iconMap);
-    }
-
-    public Canvas build()
-    {
-      Canvas canvas;
-
-      canvas = new Canvas(mi_size, mi_size);
-      if (m_debug)
+      if (!m_icon.m_iconMap.isEmpty())
       {
-        drawGrid(canvas);
-      }
+        m_icon.m_iconMap.entrySet().forEach(entry -> {
+          FxIcon icon;
+          IconAlignment alignment;
+          double x;
+          double y;
 
-      return build(IconAlignment.CENTER_CENTER, this, canvas, true);
-    }
+          icon = entry.getValue();
+          alignment = entry.getKey();
 
-    private void drawGrid(Canvas canvas)
-    {
-      int blockSize;
-
-      blockSize = 4;
-
-      for (int x = 0; x < mi_size / blockSize; x++)
-      {
-        for (int y = 0; y < mi_size / blockSize; y++)
-        {
-          if ((y % 2 == 0 && x % 2 == 0) || (y % 2 == 1 && x % 2 == 1))
+          switch (alignment)
           {
-            canvas.getGraphicsContext2D().setFill(Color.LIGHTGRAY);
-            canvas.getGraphicsContext2D().fillRect(x * blockSize, y * blockSize, blockSize, blockSize);
+            case CENTER_CENTER:
+              x = 0 + (m_icon.getSize() - icon.getSize()) / 2;
+              y = 0 + (m_icon.getSize() - icon.getSize()) / 2;
+              break;
+            case CENTER_LEFT:
+              x = 0;
+              y = 0 + (m_icon.getSize() - icon.getSize()) / 2;
+              break;
+            case CENTER_RIGHT:
+              x = 0 + (m_icon.getSize() - icon.getSize());
+              y = 0 + (m_icon.getSize() - icon.getSize()) / 2;
+              break;
+            case LOWER_CENTER:
+              x = 0 + (m_icon.getSize() - icon.getSize()) / 2;
+              y = 0 + (m_icon.getSize() - icon.getSize());
+              break;
+            case LOWER_LEFT:
+              x = 0;
+              y = 0 + (m_icon.getSize() - icon.getSize());
+              break;
+            case LOWER_RIGHT:
+              x = 0 + (m_icon.getSize() - icon.getSize());
+              y = 0 + (m_icon.getSize() - icon.getSize());
+              break;
+            case UPPER_CENTER:
+              x = 0 + (m_icon.getSize() - icon.getSize()) / 2;
+              y = 0;
+              break;
+            case UPPER_LEFT:
+              x = 0;
+              y = 0;
+              break;
+            case UPPER_RIGHT:
+              x = 0 + (m_icon.getSize() - icon.getSize());
+              y = 0;
+              break;
+            default:
+              x = 0;
+              y = 0;
+              break;
           }
+
+          addIcon(icon.getText(), icon.getFont(), icon.getFillColor(), icon.getStrokeColor(), x, y, icon.getSize(),
+              icon.getSize());
+        });
+      }
+    }
+
+    private void addIcon(String text, Font font, Color fillColor, Color strokeColor, double x, double y, double width,
+        double height)
+    {
+      Text label;
+      StringBuilder style;
+
+      label = new Text(text);
+      label.setFont(font);
+      style = new StringBuilder("");
+      if (fillColor != null)
+      {
+        style.append("-fx-fill: ");
+        style.append(toRgb(fillColor));
+        style.append(";");
+      }
+      if (strokeColor != null)
+      {
+        style.append("-fx-stroke: ");
+        style.append(toRgb(strokeColor));
+        style.append(";");
+        style.append("-fx-stroke-width: 1;");
+      }
+      label.setStyle(style.toString());
+      label.getProperties().put(BOUNDING_BOX, new BoundingBox(snap(x), snap(y), width, height));
+
+      getChildren().add(label);
+    }
+
+    private double snap(double y)
+    {
+      return y;
+    }
+
+    private Object toRgb(Color color)
+    {
+      return "rgba(" + ((int) (color.getRed() * 255.0)) + "," + ((int) (color.getGreen() * 255.0)) + ","
+          + ((int) (color.getBlue() * 255.0)) + ", " + color.getOpacity() + ")";
+    }
+
+    @Override
+    protected void layoutChildren()
+    {
+      for (Node child : getChildren())
+      {
+        BoundingBox bb;
+
+        bb = (BoundingBox) child.getProperties().get(BOUNDING_BOX);
+        if (bb != null)
+        {
+          child.resizeRelocate(bb.getMinX(), bb.getMinY(), bb.getWidth(), bb.getHeight());
         }
-      }
-    }
-
-    private static Canvas build(IconAlignment iconAlignment, IconBuilder builder, Canvas canvas, boolean clearRect)
-    {
-      String text;
-      GraphicsContext gc;
-      Font font;
-      double x, y;
-
-      gc = canvas.getGraphicsContext2D();
-      font = builder.mi_iconFont.getIconFont(builder.mi_size);
-      text = builder.mi_iconFont.getCodepoint(builder.mi_iconId);
-
-      gc.setFont(font);
-      gc.setFill(builder.mi_fillColor);
-      gc.setFontSmoothingType(FontSmoothingType.LCD);
-      gc.setTextAlign(iconAlignment.getTextAlign());
-      gc.setTextBaseline(iconAlignment.getTextBaseline());
-
-      x = snap(iconAlignment.getX(canvas));
-      y = snap(iconAlignment.getY(canvas));
-      if(clearRect)
-      {
-        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-      }
-      gc.fillText(text, x, y);
-      if (builder.mi_strokeColor != null)
-      {
-        gc.setStroke(builder.mi_strokeColor);
-        gc.strokeText(text, x, y);
-        gc.setLineWidth(1.0);
-      }
-
-      builder.mi_iconMap.entrySet().forEach(entry -> {
-        build(entry.getKey(), entry.getValue().builder, canvas, false);
-      });
-
-      return canvas;
-    }
-    
-    private static double snap(double y) {
-        return y;
-    } 
-
-    static class Icon
-    {
-      private String iconName;
-
-      public Icon(String iconName)
-      {
-        this.iconName = IconUtil.normalizeIconName(iconName);
-      }
-
-      public String getIconName()
-      {
-        return iconName;
       }
     }
   }

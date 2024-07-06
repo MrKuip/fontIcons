@@ -1,11 +1,9 @@
 package org.kku.fonticons.sample;
 
 import java.io.IOException;
-
 import org.kku.fonticons.ui.FxIcon;
 import org.kku.fonticons.ui.FxIcon.IconSize;
 import org.kku.fonticons.ui.IconFont;
-
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -31,8 +29,8 @@ public class ImageViewExample
       //icon = new FxIcon(s).size(IconSize.LARGE).fillColor(Color.ORANGE).strokeColor(IconColorModifier.DARKER);
       icon = new FxIcon(s).size(IconSize.LARGE);
       //root.getChildren().add(new Button(icon.getId(), icon.getCanvas()));
-      root.getChildren().add(new Button(icon.getId(), icon.getImageView()));
-      root.getChildren().add(new Button(icon.getId(), icon.getCanvas()));
+      root.getChildren().add(new Button(icon.getId(), icon.getIconLabel()));
+      root.getChildren().add(new Button(icon.getId(), icon.getIconLabel()));
     });
     scrollPane = new ScrollPane(root);
     scrollPane.setFitToHeight(true);
