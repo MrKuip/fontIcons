@@ -319,7 +319,7 @@ public class FxIcon
         drawGrid(canvas);
       }
 
-      return build(IconAlignment.CENTER_CENTER, this, canvas);
+      return build(IconAlignment.CENTER_CENTER, this, canvas, true);
     }
 
     private void drawGrid(Canvas canvas)
@@ -341,7 +341,7 @@ public class FxIcon
       }
     }
 
-    private static Canvas build(IconAlignment iconAlignment, IconBuilder builder, Canvas canvas)
+    private static Canvas build(IconAlignment iconAlignment, IconBuilder builder, Canvas canvas, boolean clearRect)
     {
       String text;
       GraphicsContext gc;
@@ -360,7 +360,10 @@ public class FxIcon
 
       x = snap(iconAlignment.getX(canvas));
       y = snap(iconAlignment.getY(canvas));
-      gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+      if(clearRect)
+      {
+        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+      }
       gc.fillText(text, x, y);
       if (builder.mi_strokeColor != null)
       {
@@ -370,7 +373,7 @@ public class FxIcon
       }
 
       builder.mi_iconMap.entrySet().forEach(entry -> {
-        build(entry.getKey(), entry.getValue().builder, canvas);
+        build(entry.getKey(), entry.getValue().builder, canvas, false);
       });
 
       return canvas;
