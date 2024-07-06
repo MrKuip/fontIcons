@@ -1,4 +1,4 @@
-module org.kku.materialdesignicons
+module org.kku.fonticons
 {
   requires java.logging;
   requires transitive javafx.graphics;
