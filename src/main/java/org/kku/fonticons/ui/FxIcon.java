@@ -196,11 +196,6 @@ public class FxIcon
     return strokeColor(strokeColor.getColor());
   }
 
-  public FxIcon strokeColor(IconColorModifier iconColorModifier)
-  {
-    return strokeColor(iconColorModifier.modify(m_fillColor));
-  }
-
   public FxIcon strokeColor(Color strokeColor)
   {
     return new FxIcon(m_iconFont, m_iconId, m_size, m_fillColor, strokeColor, m_iconMap);

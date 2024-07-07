@@ -62,8 +62,10 @@ public class ImageViewExample2
       icon2 = icon2.add(IconAlignment.LOWER_CENTER, labelIcon);
       icon2 = icon2.add(IconAlignment.LOWER_LEFT, labelIcon);
       root.add(icon2.getIconLabel(), ++column, row);
-      root.add(new Button("Press me", new FxIcon("account").fillColor(Color.YELLOW)
-          .strokeColor(IconColorModifier.DARKER).size(iconSize.LARGE).getIconLabel()), ++column, row);
+      root.add(
+          new Button("Press me", new FxIcon("account").fillColor(Color.YELLOW)
+              .strokeColor(IconColorModifier.DARKER.modify(Color.YELLOW)).size(iconSize.LARGE).getIconLabel()),
+          ++column, row);
     }
 
     Label label;
@@ -72,7 +74,8 @@ public class ImageViewExample2
 
     size = 100.0;
 
-    icon10 = new FxIcon("account").size(size).fillColor(Color.YELLOW).strokeColor(IconColorModifier.DARKER);
+    icon10 = new FxIcon("account").size(size).fillColor(Color.YELLOW)
+        .strokeColor(IconColorModifier.DARKER.modify(Color.YELLOW));
     icon10 = icon10.add(IconAlignment.UPPER_RIGHT, labelIcon);
     icon10 = icon10.add(IconAlignment.LOWER_RIGHT, labelIcon);
     icon10 = icon10.add(IconAlignment.UPPER_LEFT, labelIcon);
@@ -85,7 +88,8 @@ public class ImageViewExample2
     root.add(icon10.getIconLabel(), 0, ++row);
 
     labelIcon = labelIcon.add(IconAlignment.UPPER_RIGHT, IconFont.MATERIAL_DESIGN.getIcon("square-outline"));
-    icon10 = new FxIcon("account").size(2 * size).fillColor(Color.YELLOW).strokeColor(IconColorModifier.DARKER);
+    icon10 = new FxIcon("account").size(2 * size).fillColor(Color.YELLOW)
+        .strokeColor(IconColorModifier.DARKER.modify(Color.YELLOW));
     icon10 = icon10.add(IconAlignment.UPPER_RIGHT, labelIcon);
     root.add(icon10.getIconLabel(), 0, ++row);
     root.add(labelIcon.getIconLabel(), 0, ++row);
