@@ -1,3 +1,6 @@
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.nio.file.StandardCopyOption
 
 plugins {
   id 'java-library'
@@ -42,11 +45,30 @@ task fontIconsJar(type: Jar) {
   include "**/fonticons/ui/**/*.class", "**/fonticons/util/**/*.class", "font/**", "**/fonticons/sample/**/*.class", "module-info.class"
 }
 
-jar.dependsOn generateFontDictionary
-fontIconsJar.dependsOn jar
-
 application {
   mainClass.set('org.kku.fonticons.sample.ImageViewExample');
   mainModule.set('org.kku.materialdesignicons');
 }
+
+task downloadMaterialDesignIcons {
+    doLast {
+        def url = new URL('https://github.com/Templarian/MaterialDesign-Webfont/raw/master/fonts/materialdesignicons-webfont.ttf')
+        def outputFile = file("$rootDir/src/main/resources/font/materialdesignicons-webfont.ttf")
+
+        if (!outputFile.parentFile.exists()) {
+            outputFile.parentFile.mkdirs()
+        }
+
+        // Use Streams to copy the URL content to the file
+        url.withInputStream { inputStream ->
+            Files.copy(inputStream, outputFile.toPath(), StandardCopyOption.REPLACE_EXISTING)
+        }
+
+        println "Downloaded materialdesignicons-webfont.ttf to ${outputFile.absolutePath}"
+    }
+}
+
+jar.dependsOn downloadMaterialDesignIcons
+jar.dependsOn generateFontDictionary
+fontIconsJar.dependsOn jar
 
