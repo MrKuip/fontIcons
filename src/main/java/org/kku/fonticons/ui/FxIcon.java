@@ -382,8 +382,6 @@ public class FxIcon
         bb = (BoundingBox) child.getProperties().get(BOUNDING_BOX);
         if (bb != null)
         {
-          System.out.println(
-              "resizeLocate:" + bb.getMinX() + ", " + bb.getMinY() + ", " + bb.getWidth() + ", " + bb.getHeight());
           child.resizeRelocate(bb.getMinX(), bb.getMinY(), bb.getWidth(), bb.getHeight());
         }
       }
