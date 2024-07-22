@@ -3,8 +3,8 @@ package org.kku.fonticons.ui;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Function;
-import org.kku.fonticons.util.IconUtil;
 import javafx.geometry.BoundingBox;
+import javafx.geometry.Dimension2D;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -15,22 +15,36 @@ public class FxIcon
 {
   public enum IconSize
   {
-    VERY_SMALL(12),
-    SMALLER(18),
-    SMALL(24),
-    LARGE(32),
-    VERY_LARGE(48);
+    VERY_SMALL(12, 12),
+    SMALLER(18, 18),
+    SMALL(24, 24),
+    LARGE(32, 32),
+    VERY_LARGE(48, 48);
 
-    private final int m_size;
+    private final int m_width;
+    private final int m_height;
+    private final Dimension2D m_dimension;
 
-    IconSize(int size)
+    IconSize(int width, int height)
     {
-      m_size = size;
+      m_width = width;
+      m_height = height;
+      m_dimension = new Dimension2D(width, height);
     }
 
-    public int getSize()
+    public int getWidth()
     {
-      return m_size;
+      return m_width;
+    }
+
+    public int getHeight()
+    {
+      return m_height;
+    }
+
+    public Dimension2D getSize()
+    {
+      return m_dimension;
     }
   }
 
@@ -103,7 +117,7 @@ public class FxIcon
 
   private final IconFont m_iconFont;
   private final String m_iconId;
-  private final double m_size;
+  private final Dimension2D m_size;
   private final Color m_fillColor;
   private final Color m_strokeColor;
   private final Map<IconAlignment, FxIcon> m_iconMap;
@@ -122,17 +136,17 @@ public class FxIcon
         new LinkedHashMap<IconAlignment, FxIcon>());
   }
 
-  public FxIcon(IconFont iconFont, String iconId, double size, Color fillColor, Color strokeColor,
+  public FxIcon(IconFont iconFont, String iconId, Dimension2D size, Color fillColor, Color strokeColor,
       Map<IconAlignment, FxIcon> iconMap)
   {
     m_iconFont = iconFont;
-    m_iconId = IconUtil.normalizeIconName(iconId);
+    m_iconId = normalizeIconName(iconId);
     m_size = size;
     m_fillColor = fillColor;
     m_iconMap = iconMap;
     m_strokeColor = strokeColor;
 
-    m_font = m_iconFont.getIconFont(size);
+    m_font = m_iconFont.getIconFont(size.getHeight());
     m_text = m_iconFont.getCodepoint(getId());
   }
 
@@ -151,14 +165,24 @@ public class FxIcon
     return size(size.getSize());
   }
 
-  public FxIcon size(double size)
+  public FxIcon size(Dimension2D size)
   {
     return new FxIcon(m_iconFont, m_iconId, size, m_fillColor, m_strokeColor, m_iconMap);
   }
 
-  public double getSize()
+  public Dimension2D getSize()
   {
     return m_size;
+  }
+
+  public double getWidth()
+  {
+    return getSize().getWidth();
+  }
+
+  public double getHeight()
+  {
+    return getSize().getHeight();
   }
 
   public String getText()
@@ -186,6 +210,11 @@ public class FxIcon
     return fillColor(fillColor.getColor());
   }
 
+  public FxIcon fillColor(IconColorModifier iconColorModifier)
+  {
+    return fillColor(iconColorModifier.modify(getFillColor()));
+  }
+
   public FxIcon fillColor(Color fillColor)
   {
     return new FxIcon(m_iconFont, m_iconId, m_size, fillColor, m_strokeColor, m_iconMap);
@@ -209,9 +238,13 @@ public class FxIcon
   public FxIcon add(IconAlignment alignment, FxIcon fxIcon, double sizeFactor)
   {
     LinkedHashMap<IconAlignment, FxIcon> iconMap;
+    Dimension2D dimension;
+
+    dimension = getSize();
+    dimension = new Dimension2D(dimension.getWidth() * sizeFactor, dimension.getHeight() * sizeFactor);
 
     iconMap = new LinkedHashMap<>(m_iconMap);
-    iconMap.put(alignment, new FxIcon(fxIcon).size(getSize() * sizeFactor));
+    iconMap.put(alignment, new FxIcon(fxIcon).size(dimension));
 
     return new FxIcon(m_iconFont, m_iconId, m_size, m_fillColor, m_strokeColor, iconMap);
   }
@@ -237,7 +270,7 @@ public class FxIcon
     private void init()
     {
       addIcon(m_icon.getText(), m_icon.getFont(), m_icon.getFillColor(), m_icon.getStrokeColor(), 0.0, 0.0,
-          m_icon.getSize(), m_icon.getSize());
+          m_icon.getWidth(), m_icon.getHeight());
 
       if (!m_icon.m_iconMap.isEmpty())
       {
@@ -253,31 +286,31 @@ public class FxIcon
           switch (alignment)
           {
             case CENTER_CENTER:
-              x = 0 + (m_icon.getSize() - icon.getSize()) / 2;
-              y = 0 + (m_icon.getSize() - icon.getSize()) / 2;
+              x = 0 + (m_icon.getWidth() - icon.getWidth()) / 2;
+              y = 0 + (m_icon.getHeight() - icon.getHeight()) / 2;
               break;
             case CENTER_LEFT:
               x = 0;
-              y = 0 + (m_icon.getSize() - icon.getSize()) / 2;
+              y = 0 + (m_icon.getHeight() - icon.getHeight()) / 2;
               break;
             case CENTER_RIGHT:
-              x = 0 + (m_icon.getSize() - icon.getSize());
-              y = 0 + (m_icon.getSize() - icon.getSize()) / 2;
+              x = 0 + (m_icon.getWidth() - icon.getWidth());
+              y = 0 + (m_icon.getHeight() - icon.getHeight()) / 2;
               break;
             case LOWER_CENTER:
-              x = 0 + (m_icon.getSize() - icon.getSize()) / 2;
-              y = 0 + (m_icon.getSize() - icon.getSize());
+              x = 0 + (m_icon.getWidth() - icon.getWidth()) / 2;
+              y = 0 + (m_icon.getHeight() - icon.getHeight());
               break;
             case LOWER_LEFT:
               x = 0;
-              y = 0 + (m_icon.getSize() - icon.getSize());
+              y = 0 + (m_icon.getHeight() - icon.getHeight());
               break;
             case LOWER_RIGHT:
-              x = 0 + (m_icon.getSize() - icon.getSize());
-              y = 0 + (m_icon.getSize() - icon.getSize());
+              x = 0 + (m_icon.getWidth() - icon.getWidth());
+              y = 0 + (m_icon.getHeight() - icon.getHeight());
               break;
             case UPPER_CENTER:
-              x = 0 + (m_icon.getSize() - icon.getSize()) / 2;
+              x = 0 + (m_icon.getWidth() - icon.getWidth()) / 2;
               y = 0;
               break;
             case UPPER_LEFT:
@@ -285,7 +318,7 @@ public class FxIcon
               y = 0;
               break;
             case UPPER_RIGHT:
-              x = 0 + (m_icon.getSize() - icon.getSize());
+              x = 0 + (m_icon.getWidth() - icon.getWidth());
               y = 0;
               break;
             default:
@@ -294,8 +327,8 @@ public class FxIcon
               break;
           }
 
-          addIcon(icon.getText(), icon.getFont(), icon.getFillColor(), icon.getStrokeColor(), x, y, icon.getSize(),
-              icon.getSize());
+          addIcon(icon.getText(), icon.getFont(), icon.getFillColor(), icon.getStrokeColor(), x, y, icon.getWidth(),
+              icon.getHeight());
         });
       }
     }
@@ -349,9 +382,16 @@ public class FxIcon
         bb = (BoundingBox) child.getProperties().get(BOUNDING_BOX);
         if (bb != null)
         {
+          System.out.println(
+              "resizeLocate:" + bb.getMinX() + ", " + bb.getMinY() + ", " + bb.getWidth() + ", " + bb.getHeight());
           child.resizeRelocate(bb.getMinX(), bb.getMinY(), bb.getWidth(), bb.getHeight());
         }
       }
     }
+  }
+
+  public static String normalizeIconName(String iconName)
+  {
+    return iconName.toUpperCase().replace('-', '_');
   }
 }

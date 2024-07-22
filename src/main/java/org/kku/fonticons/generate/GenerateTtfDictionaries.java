@@ -7,8 +7,8 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
+import org.kku.fonticons.ui.FxIcon;
 import org.kku.fonticons.ui.IconFont;
-import org.kku.fonticons.util.IconUtil;
 import com.google.typography.font.sfntly.Font;
 import com.google.typography.font.sfntly.FontFactory;
 import com.google.typography.font.sfntly.Tag;
@@ -71,7 +71,7 @@ public class GenerateTtfDictionaries
             {
               try
               {
-                fileWriter.write(IconUtil.normalizeIconName(name) + "="
+                fileWriter.write(FxIcon.normalizeIconName(name) + "="
                     + Integer.toHexString(Integer.valueOf(unicodeByIndexMap.get(key))).toUpperCase() + "\r\n");
               }
               catch (IOException ex)

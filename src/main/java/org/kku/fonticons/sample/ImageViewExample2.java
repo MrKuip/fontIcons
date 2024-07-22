@@ -8,6 +8,7 @@ import org.kku.fonticons.ui.FxIcon.IconColorModifier;
 import org.kku.fonticons.ui.FxIcon.IconSize;
 import org.kku.fonticons.ui.IconFont;
 import javafx.application.Application;
+import javafx.geometry.Dimension2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -70,9 +71,9 @@ public class ImageViewExample2
 
     Label label;
     FxIcon icon10;
-    double size;
+    Dimension2D size;
 
-    size = 100.0;
+    size = new Dimension2D(100.0, 100.0);
 
     icon10 = new FxIcon("account").size(size).fillColor(Color.YELLOW)
         .strokeColor(IconColorModifier.DARKER.modify(Color.YELLOW));
@@ -88,11 +89,15 @@ public class ImageViewExample2
     root.add(icon10.getIconLabel(), 0, ++row);
 
     labelIcon = labelIcon.add(IconAlignment.UPPER_RIGHT, IconFont.MATERIAL_DESIGN.getIcon("square-outline"));
-    icon10 = new FxIcon("account").size(2 * size).fillColor(Color.YELLOW)
-        .strokeColor(IconColorModifier.DARKER.modify(Color.YELLOW));
+    icon10 = new FxIcon("account").size(new Dimension2D(2 * size.getWidth(), 2 * size.getHeight()))
+        .fillColor(Color.YELLOW).strokeColor(IconColorModifier.DARKER.modify(Color.YELLOW));
     icon10 = icon10.add(IconAlignment.UPPER_RIGHT, labelIcon);
     root.add(icon10.getIconLabel(), 0, ++row);
     root.add(labelIcon.getIconLabel(), 0, ++row);
+
+    icon10 = new FxIcon("drag-vertical").size(new Dimension2D(50.0, 100.0)).fillColor(Color.YELLOW)
+        .strokeColor(IconColorModifier.DARKER.modify(Color.YELLOW));
+    root.add(icon10.getIconLabel(), 0, ++row);
 
     // Setting the Scene object
     Scene scene = new Scene(new ScrollPane(root), 800, 500);
