@@ -6,11 +6,12 @@ plugins {
   id 'java-library'
   id 'eclipse'
   id 'application'
+  id 'maven-publish'
   id 'org.openjfx.javafxplugin' version '0.1.0'
 }
 
 group = 'org.kku'
-version = '1.0.0'
+version = '1.0.1'
 
 defaultTasks 'fontIconsjar'
 
@@ -31,7 +32,7 @@ dependencies {
 }
 
 task generateFontDictionary(type: JavaExec) {
-  main = 'org.kku.fonticons.generate.GenerateTtfDictionaries'
+  getMainClass().set('org.kku.fonticons.generate.GenerateTtfDictionaries')
   args "src/main/resources"
   classpath = sourceSets.main.runtimeClasspath
 }
@@ -50,7 +51,7 @@ task fontIconsJar(type: Jar) {
 
 application {
   mainClass.set('org.kku.fonticons.sample.ImageViewExample');
-  mainModule.set('org.kku.materialdesignicons');
+  mainModule.set('org.kku.fontIcons');
 }
 
 task downloadMaterialDesignIcons {
@@ -75,3 +76,20 @@ jar.dependsOn downloadMaterialDesignIcons
 jar.dependsOn generateFontDictionary
 fontIconsJar.dependsOn jar
 
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/MrKuip/fontIcons")
+            credentials {
+                username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_USERNAME")
+                password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_PASSWORD")
+            }
+        }
+    }
+    publications {
+        gpr(MavenPublication) {
+            from(components.java)
+        }
+    }
+}
