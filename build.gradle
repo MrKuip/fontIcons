@@ -9,9 +9,6 @@ plugins {
   id 'org.openjfx.javafxplugin' version '0.1.0'
 }
 
-group = 'org.kku'
-version = '1.0.1'
-
 defaultTasks 'fontIconsjar'
 
 apply from: 'build-eclipse.gradle'
@@ -34,6 +31,15 @@ task generateFontDictionary(type: JavaExec) {
   getMainClass().set('org.kku.fonticons.generate.GenerateTtfDictionaries')
   args "src/main/resources"
   classpath = sourceSets.main.runtimeClasspath
+
+  def ttfFiles = fileTree("src/main/resources/font") {
+    include "**/*.ttf" 
+  }
+
+  inputs.files ttfFiles
+  outputs.files ttfFiles.collect { file -> 
+    file.absolutePath.replace(".ttf", ".properties");
+  }
 }
 
                 
@@ -53,11 +59,14 @@ application {
   mainModule.set('org.kku.fontIcons');
 }
 
-task downloadMaterialDesignIcons {
-    doLast {
-        def url = new URL('https://github.com/Templarian/MaterialDesign-Webfont/raw/master/fonts/materialdesignicons-webfont.ttf')
-        def outputFile = file("$projectDir/src/main/resources/font/materialdesignicons-webfont.ttf")
+tasks.register("downloadMaterialDesignIcons")  {
+    def url = new URL('https://github.com/Templarian/MaterialDesign-Webfont/raw/master/fonts/materialdesignicons-webfont.ttf')
+    def outputFile = file("$projectDir/src/main/resources/font/materialdesignicons-webfont.ttf")
 
+    inputs.property("url", url);
+    outputs.file(outputFile);
+
+    doLast {
         if (!outputFile.parentFile.exists()) {
             outputFile.parentFile.mkdirs()
         }
@@ -69,6 +78,10 @@ task downloadMaterialDesignIcons {
 
         println "Downloaded materialdesignicons-webfont.ttf to ${outputFile.absolutePath}"
     }
+}
+
+tasks.named("processResources") {
+    dependsOn("downloadMaterialDesignIcons")
 }
 
 jar.dependsOn downloadMaterialDesignIcons
