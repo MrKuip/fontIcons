@@ -9,7 +9,10 @@ plugins {
   id 'org.openjfx.javafxplugin' version '0.1.0'
 }
 
-defaultTasks 'fontIconsjar'
+group = "org.kku"
+version = "1.0.1"
+
+defaultTasks 'jar'
 
 apply from: 'build-eclipse.gradle'
 
@@ -40,18 +43,6 @@ task generateFontDictionary(type: JavaExec) {
   outputs.files ttfFiles.collect { file -> 
     file.absolutePath.replace(".ttf", ".properties");
   }
-}
-
-                
-task fontIconsJar(type: Jar) {
-  archiveBaseName = "fontIcons"
-  manifest {
-    attributes 'Implementation-Title': 'FontIcons (material design)',
-               'Implementation-Version': version
-  }
-  includeEmptyDirs = false
-  from sourceSets.main.output
-  include "**/fonticons/ui/**/*.class", "**/fonticons/util/**/*.class", "font/**", "**/fonticons/sample/**/*.class", "module-info.class"
 }
 
 application {
@@ -86,5 +77,13 @@ tasks.named("processResources") {
 
 jar.dependsOn downloadMaterialDesignIcons
 jar.dependsOn generateFontDictionary
-fontIconsJar.dependsOn jar
+
+tasks.jar {
+  exclude('**/com/google/**');
+
+  manifest {
+   attributes 'Implementation-Title': 'FontIcons (material design)',
+              'Implementation-Version': version
+  }
+}
 
