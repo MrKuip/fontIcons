@@ -25,6 +25,11 @@ javafx {
     modules = [ 'javafx.controls' ]
 }
 
+java {
+  withJavadocJar()
+  withSourcesJar()
+}
+
 dependencies {
   implementation 'com.ibm.icu:icu4j:74.2'
   implementation 'com.ibm.icu:icu4j-charset:74.2'
@@ -77,10 +82,19 @@ tasks.named("processResources") {
 
 jar.dependsOn downloadMaterialDesignIcons
 jar.dependsOn generateFontDictionary
+sourcesJar.dependsOn generateFontDictionary
+
+tasks.javadoc {
+  exclude('**/com/google/**')
+  failOnError = false 
+}
+
+tasks.sourcesJar {
+  exclude('**/com/google/**')
+}
 
 tasks.jar {
-  exclude('**/com/google/**');
-
+  exclude('**/com/google/**')
   manifest {
    attributes 'Implementation-Title': 'FontIcons (material design)',
               'Implementation-Version': version
