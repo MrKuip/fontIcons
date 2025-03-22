@@ -37,7 +37,6 @@ eclipse {
 
 boolean isModule(entry) {
 
-  print 'haha:' + entry
   // Only libraries can be modules
   if(entry == null || !entry.kind.equals("lib"))
   {
