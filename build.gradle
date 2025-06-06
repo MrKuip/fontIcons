@@ -37,10 +37,10 @@ dependencies {
 
 task generateFontDictionary(type: JavaExec) {
   getMainClass().set('org.kku.fonticons.generate.GenerateTtfDictionaries')
-  args "src/main/resources"
+  args "src/main/resources/module-resources"
   classpath = sourceSets.main.runtimeClasspath
 
-  def ttfFiles = fileTree("src/main/resources/font") {
+  def ttfFiles = fileTree("src/main/resources/module-resources/font") {
     include "**/*.ttf" 
   }
 
@@ -57,7 +57,7 @@ application {
 
 tasks.register("downloadMaterialDesignIcons")  {
     def url = new URL('https://github.com/Templarian/MaterialDesign-Webfont/raw/master/fonts/materialdesignicons-webfont.ttf')
-    def outputFile = file("$projectDir/src/main/resources/font/materialdesignicons-webfont.ttf")
+    def outputFile = file("$projectDir/src/main/resources/module-resources/font/materialdesignicons-webfont.ttf")
 
     inputs.property("url", url);
     outputs.file(outputFile);

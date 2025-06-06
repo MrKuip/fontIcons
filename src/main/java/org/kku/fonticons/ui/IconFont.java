@@ -35,12 +35,12 @@ public enum IconFont
 
   public InputStream getTrueTypeFontAsStream()
   {
-    return IconFont.class.getResourceAsStream(getTrueTypeFontResourceName());
+    return IconFont.class.getResourceAsStream("/module-resources" + getTrueTypeFontResourceName());
   }
 
   public InputStream getTrueTypeFontDictionaryAsStream()
   {
-    return IconFont.class.getResourceAsStream(getTrueTypeFontResourceDictionaryName());
+    return IconFont.class.getResourceAsStream("/module-resources" + getTrueTypeFontResourceDictionaryName());
   }
 
   public FxIcon getIcon(String iconName)

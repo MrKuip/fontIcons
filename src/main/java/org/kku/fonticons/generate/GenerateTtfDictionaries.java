@@ -39,9 +39,6 @@ public class GenerateTtfDictionaries
         Map<Integer, String> nameByIndexMap;
         Map<Integer, Integer> unicodeByIndexMap;
 
-        System.out.println(
-            "Generate dictionary for " + iconFont.getTrueTypeFontResourceName() + " in " + dictonaryFile.getPath());
-
         font = FontFactory.getInstance().loadFonts(is)[0];
 
         cmapTable = font.getTable(Tag.cmap);
