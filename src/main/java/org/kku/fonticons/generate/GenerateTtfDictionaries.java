@@ -61,7 +61,7 @@ public class GenerateTtfDictionaries
 
         try (FileWriter fileWriter = new FileWriter(dictonaryFile))
         {
-          nameByIndexMap.forEach((key, value) -> {
+          nameByIndexMap.forEach((key, _) -> {
             String name;
             name = nameByIndexMap.get(key);
             if (!name.isEmpty())
